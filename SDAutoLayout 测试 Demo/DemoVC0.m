@@ -10,8 +10,7 @@
  
  *********************************************************************************
  *                                                                                *
- * 在您使用此自动布局库的过程中如果出现bug请及时以以下任意一种方式联系我们，我们会及时修复bug并  *
- * 帮您解决问题。                                                                    *
+ * 完善了第一列view距离nav bar的问题，横屏时也使用同样的规则                                                                    *
  * QQ    : 2689718696(gsdios)                                                      *
  * Email : gsdios@126.com                                                          *
  * GitHub: https://github.com/gsdios                                               *
@@ -29,10 +28,13 @@
 {
     [super viewDidLoad];
     
-    
+    CGRect rectNav = self.navigationController.navigationBar.frame;
+    CGRect rectStatus = [[UIApplication sharedApplication] statusBarFrame];
+    //top space to superview--rectNav.size.height+rectStatus.size.height+20
+    //if it is in landscape view, the gap between view0 and nav bar is the same in portrait view
     self.view0.sd_layout
     .leftSpaceToView(self.view, 10)
-    .topSpaceToView(self.view,80)
+    .topSpaceToView(self.view,rectNav.size.height+rectStatus.size.height+20)
     .heightIs(130)
     .widthRatioToView(self.view, 0.4);
     
@@ -75,6 +77,12 @@
 - (void)viewWillLayoutSubviews
 {
     [super viewWillLayoutSubviews];
+    //do the same for landscape view
+    CGRect rectNav = self.navigationController.navigationBar.frame;
+    CGRect rectStatus = [[UIApplication sharedApplication] statusBarFrame];
+    
+    self.view0.sd_layout
+    .topSpaceToView(self.view,rectNav.size.height+rectStatus.size.height+20);
     
     CGFloat view1W = (self.view.width * 0.6 - 10 * 4) / 2;
     self.view1.sd_layout.widthIs(view1W);
